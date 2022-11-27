@@ -13,7 +13,15 @@ spec:
       name: letsencrypt-staging
        # Enable the HTTP-01 challenge provider
     solvers:
-    - http01:
-        ingress:
-          class: nginx
-
+    - selector:
+        dnsZones:
+          - "example.org"
+      dns01:
+        route53:
+          region: us-east-2
+          accessKeyID: AKIAJ46YWSCXAUY455UQ 
+          secretAccessKeySecretRef:
+            name: prod-route53-credentials-secret
+            key: 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 
+          # you can also assume a role with these credentials
+          role: arn:aws:iam::988002206709:role/dns-manager 
