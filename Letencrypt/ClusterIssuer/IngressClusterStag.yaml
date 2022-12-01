@@ -13,7 +13,7 @@ spec:
     secretName: stagingcert
   ingressClassName: nginx
   rules:
-  - host: www.simplek8s.com 
+  - host: simplek8s.com 
     http:
       paths:
       - path: /
