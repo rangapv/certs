@@ -2,6 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: letsencrypt-prod
+  namespace: default
 spec:
   acme:
        # The ACME server URL
@@ -10,7 +11,7 @@ spec:
   email: admin@simplek8s.com 
        # Name of a secret used to store the ACME account private key
   privateKeySecretRef:
-    name: letsencrypt-prod
+    name: letsencrypt-prod 
        # Enable the HTTP-01 challenge provider
   solvers:
     - http01:

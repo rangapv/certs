@@ -3,13 +3,13 @@ kind: Ingress
 metadata:
   annotations:
     # add an annotation indicating the issuer to use.
-    cert-manager.io/issuer: Issuer
+    cert-manager.io/issuer: letsencrypt-prod 
   namespace: default    
   name: nginx-ingress1
 tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
   - hosts:
     - simplek8s.com
-    secretName: Prodcert
+    secretName: prodcert
 spec:
   ingressClassName: nginx
   rules:
