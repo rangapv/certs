@@ -6,11 +6,11 @@ metadata:
     cert-manager.io/issuer: letsencrypt-prod 
   namespace: default    
   name: nginx-ingress1
-tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+spec:
+  tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
   - hosts:
     - simplek8s.com
     secretName: prodcert
-spec:
   ingressClassName: nginx
   rules:
   - host: www.simplek8s.com 

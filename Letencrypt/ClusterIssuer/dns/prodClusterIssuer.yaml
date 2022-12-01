@@ -1,25 +1,28 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
   namespace: default
 spec:
   acme:
        # The ACME server URL
-  server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory 
        # Email address used for ACME registration
-  email: admin@simplek8s.com 
+    email: admin@simplek8s.com 
        # Name of a secret used to store the ACME account private key
-  privateKeySecretRef:
-    name: letsencrypt-prod 
+    privateKeySecretRef:
+      name: letsencrypt-prod
        # Enable the HTTP-01 challenge provider
-  solvers:
-    - dns01:
+    solvers:
+    - selector:
+        dnsZones:
+          - "simplek8s.com"
+      dns01:
         route53:
-          region: eu-central-1
-          accessKeyID: AKIAIOSFODNN7EXAMPLE
+          region: us-east-2 
+          accessKeyID: AKXXXXXXXXX 
           secretAccessKeySecretRef:
             name: prod-route53-credentials-secret
-            key: secret-access-key
+            key: iJ8XXXXXXXXXXXXXXXXXXXc
           # you can also assume a role with these credentials
-          role: arn:aws:iam::YYYYYYYYYYYY:role/dns-manager
+          role: arn:aws:iam::XXXXXXXXXXXX:role/dns-manager 
