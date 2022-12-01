@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata:
+  annotations:
+    # add an annotation indicating the issuer to use.
+    cert-manager.io/issuer: Issuer
+  namespace: default    
+  name: nginx-ingress1
+tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+  - hosts:
+    - simplek8s.com
+    secretName: Prodcert
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: www.simplek8s.com 
+    http:
+      paths:
+      - path: /
+        pathType: Prefix 
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 80
