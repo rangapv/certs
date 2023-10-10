@@ -1,5 +1,8 @@
-#!/bin/bash
-#ususage : ./cert.sh secret_id_aws
+#!/usr/bin/env bash
+#usage : ./cert.sh secret_id_aws
+
+source <(curl -s https://raw.githubusercontent.com/rangapv/bash-source/main/s1.sh) >>/dev/null >&1
+
 set -E
 inp="$@"
 sec1="${@:1:1}"
@@ -20,32 +23,68 @@ then
 	echo " CertManager YAML with ,webhook,injector create successfully"
 	fi
 else
-	echo "cert-manager some version already installed and running"
+	echo -e "cert-manager `cmctl version` already installed and running"
 fi
 }
 
 stagsecret() {
 
-secrt1="stag-route53-credentials-secret"
-secrt1s=`kubectl get secret $secrt1 -n cert-manager`
+secrt="stag-route53-credentials-secret"
+secrt1=`kubectl get secret "$secrt" -n cert-manager`
+secrt1s="$?"
 if [[ ( $secrt1s != "0" ) ]]
 then
-	stagsec=`kubectl create secret generic $secrt1 --from-literal=secretkeyid=$sec1 -n cert-manager`
+	stagsec=`kubectl create secret generic $secrt --from-literal=secretkeyid=$sec1 -n cert-manager`
 
 else
-	echo "the secret with name $secrt1 is already present in the namespace cert-manager"
+	echo "the secret with name $secrt is already present in the namespace cert-manager"
 fi
 
 }
 
 
+osarch() {
+
+cmct=`which cmctl`
+cmcts="$?"
+if [[ ( $cmcts != "0" ) ]]
+then
+#OS=$(go env GOOS)
+#ARCH=$(go env GOARCH)
+#THe params os and ARCH have been imported from the script s1.sh from bash-source in my github repo
+wge=`which wget`
+wges="$?"
+cmcflag=0
+if [[ ( $wges = "0" ) && ( $cmcflag != 1 ) ]]
+then
+`wget -P ./ https://github.com/cert-manager/cert-manager/releases/latest/download/cmctl-$os-$ARCH.tar.gz`
+tar xzf cmctl-$os-$ARCH.tar.gz
+sudo mv cmctl /usr/local/bin
+cmcflag=1
+fi
+cur1=`which curl`
+cur1s="$?"
+if [[ ( $cur1s = "0" )  && ( $cmcflag != 1 ) ]]
+then
+`curl -fsSL -o ./cmctl.tar.gz https://github.com/cert-manager/cert-manager/releases/latest/download/cmctl-$os-$ARCH.tar.gz`
+tar xzf cmctl.tar.gz
+sudo mv cmctl /usr/local/bin
+cmcflag=1
+fi
+if [[ ( $cmcflag = "0" ) ]]
+then
+	echo "Unable to install cmctl reason could be no curl/wget installed"
+fi
+fi
+}
 
 if [[ ( -z "$1" ) ]]
 then
 	echo "The script needs aws_secet key"
 	echo "usage: : ./cert.sh secret_id_aws"
 	exit
-fi	
+fi
 
+osarch
 certman
 stagsecret
