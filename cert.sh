@@ -9,11 +9,17 @@ sec1="${@:1:1}"
 
 certman() {
 
-certy1=`kubectl get po -n cert-manager`
+certy1=`kubectl get po -n cert-manager | wc -l`
 certy1s="$?"
-
-if [[ ( $certy1s != "0" ) ]]
+`cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace 
+metadata:
+  name: cert-manager
+EOF`
+if [[ (( $certy1s != 2 )) ]]
 then
+	
 
 	#c1=`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml`
 	c1=`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml`
@@ -47,6 +53,7 @@ osarch() {
 
 cmct=`which cmctl`
 cmcts="$?"
+#echo "inside osarch and cmcts is $cmcts"
 if [[ ( $cmcts != "0" ) ]]
 then
 #OS=$(go env GOOS)
